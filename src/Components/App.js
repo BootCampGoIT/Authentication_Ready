@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Todo from './todo/Todo';
 import { NavLink, Switch, Route } from 'react-router-dom';
 import css from './App.module.css';
@@ -6,6 +6,10 @@ import AuthForm from './auth/authForm/AuthForm';
 import RegistrationForm from './auth/registrationForm/RegistrationForm';
 import { signOutOperation } from '../redux/operations/authOperation';
 import { connect } from 'react-redux';
+import PrivateRoute from './routes/PrivateRoute';
+import PublicRoute from './routes/PublicRoute';
+import routes from './routes';
+import { authSelector } from '../redux/selectors/todoSelectors';
 
 const App = (props) => {
     return (
@@ -21,46 +25,78 @@ const App = (props) => {
                             Home
                         </NavLink>
                     </li>
-                    <li>
-                        <NavLink
-                            className={css.navigationItem}
-                            activeClassName={css.activeNavigationItem}
-                            to="/signin">
-                            SignIn
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            className={css.navigationItem}
-                            activeClassName={css.activeNavigationItem}
-                            to="/signup">
-                            SignUp
-                        </NavLink>
-
-                    </li>
-                    <li>
-                        <NavLink
-                            className={css.navigationItem}
-                            activeClassName={css.activeNavigationItem}
-                            to="/todo">
-                            Todo
-                        </NavLink>
-                    </li>
+                    {props.isAuth &&
+                        <>
+                            <li>
+                                <NavLink
+                                    className={css.navigationItem}
+                                    activeClassName={css.activeNavigationItem}
+                                    to="/todo">
+                                    Todo
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    className={css.navigationItem}
+                                    activeClassName={css.activeNavigationItem}
+                                    to="/profile">
+                                    My profile
+                                </NavLink>
+                            </li>
+                        </>
+                    }
                 </ul>
-                <button type="button" onClick={props.signOutOperation} className="button">SignOut</button>
+
+                <div className="authBlock">
+                    {!props.isAuth ?
+                        <ul className={css.authList} >
+                            <li>
+                                <NavLink
+                                    className={css.authItem}
+                                    activeClassName={css.activeAuthItem}
+                                    to="/signin">
+                                    SignIn
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    className={css.authItem}
+                                    activeClassName={css.activeAuthItem}
+                                    to="/signup">
+                                    SignUp
+                                </NavLink>
+                            </li>
+                        </ul>
+                        :
+                        <button type="button" onClick={props.signOutOperation} className="button">SignOut</button>
+                    }
+                </div>
             </div>
 
             <div className={css.container}>
                 <Switch>
-                    <Route exact path="/" component={() => <h2>Home</h2>} />
-                    <Route path="/signin" component={AuthForm} />
-                    <Route path="/signup" component={RegistrationForm} />
-                    <Route path="/todo" component={Todo} />
+                    <Suspense fallback={<h2>...loading</h2>}>
+                        {/* <PublicRoute exact path="/" component={() => <h2>Home</h2>} />
+                    <PublicRoute exact path="/signin" component={AuthForm} />
+                    <PublicRoute exact path="/signup" component={RegistrationForm} />
+                    <PrivateRoute exact path="/todo" component={Todo} /> */}
+                        {routes.map(route => {
+                            return route.private
+                                ? (<PrivateRoute key={route.name} {...route} />)
+                                : (<PublicRoute key={route.name} {...route} />)
+                        })}
+                    </Suspense>
                 </Switch>
             </div>
         </>
     );
 }
+const mapStateToProps = (state) => {
+    return {
+        isAuth: authSelector(state)
+    }
+}
 
+const mapDispatchToProps = { signOutOperation }
 
-export default connect(null, { signOutOperation })(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

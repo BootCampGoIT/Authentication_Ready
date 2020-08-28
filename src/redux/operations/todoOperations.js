@@ -2,10 +2,19 @@ import axios from 'axios';
 import { loaderOn, loaderOff } from '../actions/loaderActions';
 import { setTasks, addNewTask, deleteTask, checkImportant } from '../actions/todoActions';
 import { setError, resetError } from '../actions/errorActions';
+import store from '../store';
 
 const baseUrl = "https://authentication-a5128.firebaseio.com"
 
-export const getTasksOperation = (databaseId) => async (dispatch) => {
+
+// const getToken = () => {
+//     const token = store.getState().auth.token;
+//     console.log('token=>', token);
+//     return token
+
+// }
+
+export const getTasksOperation = () => async (dispatch) => {
     try {
         dispatch(loaderOn());
         const response = await axios.get(`${baseUrl}/todo.json`);

@@ -10,5 +10,8 @@ export const persistor = persistStore(store)
 
 export default store;
 
+// console.log('store', store)
+
+// console.log("getState",store.getState());
 
 

@@ -9,7 +9,7 @@ import storage from 'redux-persist/lib/storage'
 const authPersistConfig = {
     key: 'auth',
     storage,
-    whitelist: ["email", "token", "databaseId"],
+    whitelist: ["email", "token", "databaseId", "isAuth"],
   }
 
 const rootReducer = combineReducers({

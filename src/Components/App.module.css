@@ -6,19 +6,19 @@
     align-items: center;
 }
 
-.navigationList {
+.navigationList, .authList {
     list-style: none;
     display: flex;
     justify-content: space-around;
-    width: 60%;
 }
-.navigationItem {
+.navigationItem, .authItem {
     color: white;
     text-transform: uppercase;
     text-decoration: none;
     font-weight: 800;
+    margin: 0 10px;
 }
-.activeNavigationItem {
+.activeNavigationItem, .activeAuthItem {
     color: gold;
 }
 

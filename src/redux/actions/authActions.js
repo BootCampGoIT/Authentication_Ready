@@ -6,6 +6,8 @@ const signUp = (credentials) => {
         payload: credentials //{email, token}
     }
 }
+
+
 const signIn = (credentials) => {
     return {
         type: SIGNIN,
